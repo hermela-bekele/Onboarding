@@ -10,7 +10,11 @@ interface OnboardingPortalProps {
 
 export default function OnboardingPortal({ username, onLogout }: OnboardingPortalProps) {
   const [onboardingStep, setOnboardingStep] = useState(0);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    clientId: string;
+    clientName: string;
+    publicKey: string | File;
+  }>({
     clientId: '',
     clientName: '',
     publicKey: '',
@@ -148,13 +152,27 @@ export default function OnboardingPortal({ username, onLogout }: OnboardingPorta
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Public Key</label>
-                <input
-                  type="text"
-                  name="publicKey"
-                  value={formData.publicKey}
-                  onChange={handleFormChange}
-                  className="w-full p-2 border rounded"
-                />
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    name="publicKey"
+                    value={typeof formData.publicKey === 'string' ? formData.publicKey : ''}
+                    onChange={handleFormChange}
+                    placeholder=""
+                    className="w-full p-2 border rounded"
+                  />
+                  <div className="text-center text-sm text-gray-500">- OR -</div>
+                  <input
+                    type="file"
+                    name="publicKey"
+                    accept=".pem,.key,.pub"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      setFormData(prev => ({ ...prev, publicKey: file || '' }));
+                    }}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
               </div>
             </form>
           </div>
@@ -244,7 +262,11 @@ export default function OnboardingPortal({ username, onLogout }: OnboardingPorta
                 <strong>Client Name:</strong> {formData.clientName}
               </li>
               <li>
-                <strong>Public Key:</strong> {formData.publicKey}
+                <strong>Public Key:</strong> {
+                  formData.publicKey instanceof File 
+                    ? formData.publicKey.name 
+                    : formData.publicKey
+                }
               </li>
               <li>
                 <strong>User Claims:</strong>
