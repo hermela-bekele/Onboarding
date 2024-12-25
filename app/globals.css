@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .background-image {
-  background-image: url('/Main-Page-Background.jpg');
+  background-image: url("/Main-Page-Background.jpg");
   background-size: cover;
   background-position: center;
   min-height: 100vh;
@@ -13,6 +13,3 @@
   left: 0;
   z-index: -1;
 }
-
-
-
